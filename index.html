@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Les optimisations sur VIM </title>
+  </head>
+  <body>
+  <div class="intro">
+    Bon, je ne vanterais pas ici vim (meilleur édtieur de l'univers pour ceux qui l'ignorent encore). Le but de se post n'est pas de faire un concours entre vim et emac, ni de faire un tutoriel (il en existe déjà pas mal j'imagine). Le but et de rassembler les commandes "spécial" (pas besoin de poster :w pour enregistrer).
+
+Notation: en rouge la commande, en noir l'explication et en bleu des exemples
+
+En mode insertion
+CTRL-R = fonction Evalue la fonction donnée
+CTRL-R = 6*7 va écrire 42
+CTRL-R = strftime("%c") va inscrire l'heure (allez voir la doc de strftime pour une meilleur compréhension du %c,)
+
+En mode commande (mode normal)
+CTRL-A incrémente le chiffre sous le curseur
+CTRL-X décrémente le chiffre sous le curseur
+:edit rcp://host/file permet d'éditer un fichier distant (accessible normalement avec sftp)
+xp s'est connu, mais pratique si on inverse souvent deux lettres. On pourrait même le "binder" avec une touche:
+:set imap F5 <Esc>xp$a Lie la touche F5 (en mode insértion) avec l'échange des deux caractères (celui sous avec celui juste après le curseur) tout en revenant en mode insertion à la fin de la ligne.
+V entre dans le mode visuel par ligne entière (plus besoin de tapper $ à chauqe fois)
+% recherche la parenthèse ouvrante/fermante correspondante
+:arge fichier1 fichier2 fichier3 ouvre les fichiers: fichier1, fichier2 et fichier3 tout en conservant ceux déjà ouvert.
+gf edite le fichier dont le nom est sous le curseur
+* Recherche l'occurrence suivante du nom sous le curseur
+# Recherche l'occurrence précédente du nom sous le curseur
+
+mode commande et insertion
+CTRL-RIGHT avance d'un mot (comme avec w, sauf que cela fonctionne aussi en mode insertion)
+CTRL-LEFT recule d'un mot (comme avec b)
+
+divers
+<cword> permet de désigner le mot sous le curseur.
+
+:map <C-W> :!lynx http://fr.wikipedia.org/wiki/<cword><CR><CR>
+
+Cherche sous wikipedia le mot placé sous le curseur (utiliser links à la place de lynx si vous n'avez pas ce dernier)
+/\cTruc recherche sans tenir compte de la casse (truc,Truc,TRuc,etc)
+:set background=dark adapte la coloration syntaxique pour un fond foncé
+:set background=light adapte la coloration syntaxique pour un fond clair
+:map F5 :w<CR>:!aspell -c %<CR>:e %<CR> exécute une correction orthographique (nécessite aspell) à chaque pression de F5
+Lancer un lien dans une fenêtre firefox:
+
+function! Browser ()
+    let line = getline (".")
+    let line = matchstr (line, "http://[^ ]*")
+    exec "!firefox ".line
+endfunction
+
+map <Leader>w :call Browser ()<CR>
+
+Si ça ne marche pas, remplacer firefox par mozilla-firefox (et n'oubliez pas d'installer firefox wink)
+Modifier la ligne de status (voir http://www.point-libre.org/~dimitri/blog/index.php/2006/08/01/138 pour plus de détails)
+déjà pour l'afficher il faut tapper :set laststatus=2
+:set statusline=%a\ %t%1*%m%*%10l/%2*%L%*%6c%V
+
+Allons-y pour les détails :
+
+    * %a si vous avez ouvert plusieurs fichiers, affiche le numéro de buffer sous la forme (1 of 4) pour le premier des quatre fichiers ;
+    * %t pour le nom du fichier sans le chemin ;
+    * %1* ce qui suit est affiché suivant le schéma de coloration User1 jusqu'au prochain motif %* (idem pour %2* et User2) ;
+    * %m affiche [+] lorsque le fichier est modifié et [-] s'il n'est pas modifiable ;
+    * %10l le numéro de ligne courante occupant au minimum la place de 10 caractères (c'est juste pour la mise en forme) ;
+    * %L le nombre de lignes du fichier ;
+    * %6c le numéro de la colonne courante sur 6 caractères ;
+    * %V le numéro de colonne virtuelle (tient compte de la place réellement occupée par les multi-caractères comme la tabulation, l'espace insécable, etc.)
+
+Le truc qui est monstre trop cool, rajouter l'heure courante dans la statusline! (attention, elle se met à jour seulement lorsqu'elle se rafréchit (si vous partez prendre un café, il faudra déplacer le curseur avant de connaître l'heure courante en revenant)
+:set statusline=%a\ %t%1*%m%*%10l/%2*%L%*%6c%V\ \ %{strftime('%H:%M')}
+ou encore
+
+set laststatus=2
+set statusline=%<%f%=\ [%1*%M%*%n%R%H]\ %-19(%3l,%02c%03V%)%O'%02b'\ \ %{strftime('%H:%M')}
+hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
+
+  </div>
+  </body>
+</html>
