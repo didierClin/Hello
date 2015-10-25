@@ -1,0 +1,20 @@
+.intro{
+  font-family: fantasy;
+  font-size: 18px;
+}
+
+.main{
+  font-family: cursive;
+}
+.rouge {
+  color: red;
+
+}
+.noir {
+  color: black;
+
+}
+.bleu {
+  color: blue;
+
+}
